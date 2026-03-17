@@ -1,0 +1,59 @@
+# Document parser configuration
+document_parser:
+  # Supported document types and their parsers
+  supported_types:
+    pdf: pdf_parser    # 待修改，改成具体的路径名+类名
+    docx: docx_parser
+    txt: text_parser
+
+  # Default parser if type is not specified
+  default_parser: text_parser
+
+  # Parser settings
+  parse_method: vlm
+  data_path: data/en
+  output_dir: output/parsed_documents
+  lang: en    # 根据传入的pdf动态修改，影响ocr结果
+  method: ocr    # 解析pdf页面默认方法
+  backend: vlm-transformer   # 解析pdf backend，支持：[pipeline, vllm-http-client, hybrid...]
+  server_url: http://127.0.0.1:8000  # vlm-http-engine服务地址
+  start_page_id: 0   # 解析起始页码
+  end_page_id: None    # 解析结束页码，-1表示解析到最后一页
+
+  f_dump_md: true    # 是否保存md文件
+  f_draw_layout_bbox: true   # 是否在图片上绘制布局边框
+  f_draw_span_bbox: true    # 是否在图片上绘制文本块边框
+  f_dump_middle_json: true   # 是否保存中间结果json文件
+  f_dump_model_output: true   # 是否保存模型输入输出结果
+  f_dump_orig_pdf: true   # 是否保存原始pdf文件到输出目录
+  f_dump_content_list: true   # 是否保存解析后的内容列表到json文件
+
+# markdown parser configuration
+md_parser:
+  # 解析后的内容保存路径
+  data_path: ./output/parsed_document
+  output_dir: ./output/parsed_markdown
+  model: qwen_vl
+  
+# chunker configuration
+chunker:
+  chunk_size: 1000    # 每个chunk的最大字符数
+  overlap_size: 200   # chunk之间的重叠字符数
+  separator: "\n\n"   # chunk分隔符
+  data_path: "output/parsed_markdown"    # chunk 输入数据路径
+  output_path: "output/chunks"   # chunk 输出路径
+
+# 词嵌入配置
+embedder:
+  model_name: text-embedding-3-small
+  model_path: ./models/text-embedding-3-small
+  batch_size: 16
+  device: cuda:0
+  dim: 1024
+
+# 向量数据库配置
+vector_database:
+  db_path: ./vector_db/lancedb   # 向量库地址，保存和加载都从此地址来
+  top_k: 5   # 向量检索时返回的最相似结果数量
+
+# rerank 配置

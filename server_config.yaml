@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  # 1. PostgreSQL 服务
+  postgres_db:
+    image: postgres:14-alpine
+    container_name: pg_db
+    environment:
+      POSTGRES_DB: ${PG_DBNAME}
+      POSTRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+    ports:
+      - "5432:5432"
+    
+  # 2. Redis 服务
+  redis_cache:
+    image: redis:6-alpine
+    container_name: redis_cache
+    ports:
+      - "6379:6379"
